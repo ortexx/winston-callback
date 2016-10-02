@@ -14,14 +14,12 @@ Logger.prototype.log = function() {
     if(!callback) {
         return old.apply(this, args);
     }
-            
-    if(callback) {        
-        args.pop();
-    }
+    
+    args.pop();    
     
     args.push(function (err) {
-        if(error) {
-            error = err;
+        if(err) {
+            callback(err);
         }
     })
     
@@ -33,18 +31,13 @@ Logger.prototype.log = function() {
             transport.removeListener('logged', onLogged);
             
             if(countAll == countLogged) {
-                if(callback) {
-                    callback(error);
-                }
+                callback(error);
             }
         }
         
         let onError = (err) => {
             transport.removeListener('error', onError);
-            
-            if(callback) {
-                callback(err);
-            }
+            callback(err);
         }
         
         transport.on('logged', onLogged);
