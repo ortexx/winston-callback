@@ -31,7 +31,7 @@ Logger.prototype.log = function() {
             transport.removeListener('logged', onLogged);
             
             if(countAll == countLogged) {
-                callback(error);
+                callback();
             }
         }
         
