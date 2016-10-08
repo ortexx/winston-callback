@@ -1,6 +1,6 @@
 {
     "name": "winston-callback",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Allows you to call handler after completion of all transports.",
     "main": "./index.js",
     "author": {
@@ -21,12 +21,12 @@
     "license": "MIT",
     "dependencies": {
         "winston": "*"
-    }, 
-	"repository" : { 
+    },
+	"repository" : {
 		"type" : "git",
 		"url" : "https://github.com/ortexx/winston-callback"
 	},
     "engines": {
         "node": ">=5.0.0"
-    }	
+    }
 }
