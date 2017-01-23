@@ -1,32 +1,41 @@
 {
-    "name": "winston-callback",
-    "version": "0.0.4",
-    "description": "Allows you to call handler after completion of all transports.",
-    "main": "./index.js",
-    "author": {
-        "name": "Balasyan Alexandr",
-        "email": "mywebstreet@gmail.com"
-    },
-    "keywords": [
-        "winston",
-        "callback",
-        "async",
-        "flush",
-        "sync",
-        "close",
-        "after",
-        "transports",
-        "all"
-    ],
-    "license": "MIT",
-    "dependencies": {
-        "winston": "*"
-    },
-	"repository" : {
-		"type" : "git",
-		"url" : "https://github.com/ortexx/winston-callback"
-	},
-    "engines": {
-        "node": ">=5.0.0"
-    }
+  "name": "winston-callback",
+  "version": "1.0.0",
+  "description": "Allows you to call handler after completion of all transports.",
+  "main": "./index.js",
+  "author": {
+    "name": "Balasyan Alexandr",
+    "email": "mywebstreet@gmail.com"
+  },
+  "keywords": [
+    "winston",
+    "callback",
+    "async",
+    "flush",
+    "sync",
+    "close",
+    "after",
+    "transports",
+    "all"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha"
+  },
+  "peerDependencies": {
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0",
+    "chai": "^3.5.0",
+    "winston": "^2.3.1",
+    "fs-extra-promise": "^0.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ortexx/winston-callback"
+  },
+  "engines": {
+    "node": ">=5.0.0"
+  }
 }

@@ -1,56 +1,68 @@
+"use strict";
+
 const winston = require('winston');
 
 let Logger = winston.Logger;
-let old = Logger.prototype.log;
+let oldLog = Logger.prototype.log;
+let oldLazyDrain = winston.transports.File.prototype._lazyDrain;
+
+// https://github.com/winstonjs/winston/pull/975
+winston.transports.File.prototype._lazyDrain = function () {
+  this._stream.once('drain', () => {
+    this._draining = false;
+  });
+
+  return oldLazyDrain.apply(this, arguments);
+};
 
 Logger.prototype.log = function(level) {
-    let keys = Object.keys(this.transports);
-    let countAll = 0;
-    let countLogged = 0;
-    let args = [].slice.call(arguments);
-    let callback = typeof args[args.length - 1] == 'function'? args[args.length - 1]: false;
+  let keys = Object.keys(this.transports);
+  let countAll = 0;
+  let countLogged = 0;
+  let args = [].slice.call(arguments);
+  let callback = typeof args[args.length - 1] == 'function'? args[args.length - 1]: false;
 
-    if(!callback) {
-        return old.apply(this, args);
+  if(!callback) {
+    return oldLog.apply(this, args);
+  }
+
+  args.pop();
+
+  args.push(function (err) {
+    if(err || !countAll) {
+      callback(err);
+    }
+  });
+
+  keys.map((key) => {
+    let transport = this.transports[key];
+
+    if(this.levels[transport.level] >= this.levels[level]) {
+      countAll += 1;
+    }
+    else {
+      return;
     }
 
-    args.pop();
+    function onLogged() {
+      transport.removeListener('logged', onLogged);
+      countLogged++;
 
-    args.push(function (err) {
-        if(err) {
-            callback(err);
-        }
-    })
+      if(countAll <= countLogged) {
+        callback();
+      }
+    }
 
-    keys.map((key) => {
-        let transport = this.transports[key];
+    function onError (err) {
+      transport.removeListener('error', onError);
+      callback(err);
+    }
 
-        if(this.levels[transport.level] >= this.levels[level]) {
-            countAll += 1;
-        }
-        else {
-            return;
-        }
+    transport.on('logged', onLogged);
+    transport.on('error', onError);
+  });
 
-        let onLogged = () => {
-            countLogged++;
-            transport.removeListener('logged', onLogged);
-
-            if(countAll <= countLogged) {
-                callback();
-            }
-        }
-
-        let onError = (err) => {
-            transport.removeListener('error', onError);
-            callback(err);
-        }
-
-        transport.on('logged', onLogged);
-        transport.on('error', onError);
-    });
-
-    return old.apply(this, args);
-}
+  return oldLog.apply(this, args);
+};
 
 module.exports = winston;

@@ -1,9 +1,12 @@
 # Install 
-`npm install winston-callback`
+`npm install winston winston-callback`
 
 # About
 Add to winston.Logger.prototype.log new callback handling.  
-This allows you to call handler after completion of all transports.
+This allows you to call handler after completion of all transports.  
+
+## Starting ^1.0.0
+You should install winston yourself. It is peer dependency
 
 # Example
 ```js
@@ -22,8 +25,14 @@ const logger = new (winston.Logger)({
             colorize: true
         }),
         new (winston.transports.File)({
+            name: 'f1'
             filename: "logs/error.log",
             level: 'error'
+        }),
+        new (winston.transports.File)({
+            name: 'f2'
+            filename: "logs/info.log",
+            level: 'info'
         })
         //... other transports
     ]
