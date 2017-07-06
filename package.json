@@ -6,8 +6,7 @@
   "author": {
     "name": "Balasyan Alexandr",
     "email": "mywebstreet@gmail.com"
-  },
-  "license": "MIT",
+  },  
   "keywords": [
     "winston",
     "callback",
@@ -19,6 +18,7 @@
     "transports",
     "all"
   ],  
+  "license": "MIT",
   "scripts": {
     "test": "mocha"
   },
