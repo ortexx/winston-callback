@@ -6,7 +6,7 @@ Add to winston.Logger.prototype.log new callback handling.
 This allows you to call handler after completion of all transports.  
 
 ## Starting ^1.0.0
-You should install winston yourself. It is peer dependency
+You should install winston yourself. It is peer dependency.
 
 # Example
 ```js
