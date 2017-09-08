@@ -17,29 +17,28 @@ const winston = require('winston-callback');
     const winston = require('winston');
     require('winston-callback');
 */
-
 const logger = new (winston.Logger)({
-    transports: [
-        new (winston.transports.Console)({
-            level: 'info',
-            colorize: true
-        }),
-        new (winston.transports.File)({
-            name: 'f1'
-            filename: "logs/error.log",
-            level: 'error'
-        }),
-        new (winston.transports.File)({
-            name: 'f2'
-            filename: "logs/info.log",
-            level: 'info'
-        })
-        //... other transports
-    ]
+  transports: [
+    new (winston.transports.Console)({
+        level: 'info',
+        colorize: true
+    }),
+    new (winston.transports.File)({
+        name: 'f1'
+        filename: "logs/error.log",
+        level: 'error'
+    }),
+    new (winston.transports.File)({
+        name: 'f2'
+        filename: "logs/info.log",
+        level: 'info'
+    })
+    //... other transports
+  ]
 });
 
 logger.error('surprise', function(err) {
-    process.exit(1); // or something else  
+  process.exit(1); // or something else  
 }) 
 
 // process.exit will be run after completion of all logger transports.
