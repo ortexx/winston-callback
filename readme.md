@@ -9,6 +9,7 @@ This allows you to call handler after completion of all transports.
 You should install winston yourself. It is peer dependency.
 
 # Example
+
 ```js
 const winston = require('winston-callback');
 
