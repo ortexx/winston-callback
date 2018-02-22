@@ -6,15 +6,6 @@ let Logger = winston.Logger;
 let oldLog = Logger.prototype.log;
 let oldLazyDrain = winston.transports.File.prototype._lazyDrain;
 
-// https://github.com/winstonjs/winston/pull/975
-winston.transports.File.prototype._lazyDrain = function () {
-  this._stream.once('drain', () => {
-    this._draining = false;
-  });
-
-  return oldLazyDrain.apply(this, arguments);
-};
-
 Logger.prototype.log = function(level) {
   let keys = Object.keys(this.transports);
   let countAll = 0;
