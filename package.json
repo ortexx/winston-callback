@@ -1,6 +1,6 @@
 {
   "name": "winston-callback",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Allows you to call handler after completion of all transports.",
   "main": "./index.js",
   "author": {
