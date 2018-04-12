@@ -4,7 +4,6 @@ const winston = require('winston');
 
 let Logger = winston.Logger;
 let oldLog = Logger.prototype.log;
-let oldLazyDrain = winston.transports.File.prototype._lazyDrain;
 
 Logger.prototype.log = function(level) {
   let keys = Object.keys(this.transports);
