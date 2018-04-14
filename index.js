@@ -36,7 +36,7 @@ Logger.prototype.log = function (level) {
       return;
     }
 
-    function onLogged() {
+    function onLogged () {
       transport.removeListener('logged', onLogged);
       countLogged++;
 
