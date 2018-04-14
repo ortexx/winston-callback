@@ -22,7 +22,7 @@ Logger.prototype.log = function (level) {
     result = arguments;
 
     if(err) {
-      return callback(err);
+      return callback.apply(callback, err);
     }
 
     if(!countAll) {
@@ -51,7 +51,7 @@ Logger.prototype.log = function (level) {
 
     function onError (err) {
       transport.removeListener('error', onError);
-      callback(err);
+      callback.apply(callback, err);
     }
 
     transport.on('logged', onLogged);
