@@ -5,12 +5,14 @@ const winston = require('winston');
 let Logger = winston.Logger;
 let oldLog = Logger.prototype.log;
 
-Logger.prototype.log = function(level) {
+Logger.prototype.log = function (level) {
   let keys = Object.keys(this.transports);
   let countAll = 0;
   let countLogged = 0;
   let args = [].slice.call(arguments);
-  let callback = typeof args[args.length - 1] == 'function'? args[args.length - 1]: false;
+  let last = args[args.length - 1];
+  let callback = typeof last == 'function'? last: false;
+  let result = [];
 
   if(!callback) {
     return oldLog.apply(this, args);
@@ -22,6 +24,8 @@ Logger.prototype.log = function(level) {
     if(err || !countAll) {
       callback(err);
     }
+
+    result = arguments;
   });
 
   keys.map((key) => {
@@ -39,7 +43,7 @@ Logger.prototype.log = function(level) {
       countLogged++;
 
       if(countAll <= countLogged) {
-        callback();
+        callback.apply(callback, result);
       }
     }
 
