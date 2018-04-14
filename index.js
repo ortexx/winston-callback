@@ -18,15 +18,13 @@ Logger.prototype.log = function (level) {
     return oldLog.apply(this, args);
   }
 
-  args.pop();
-
-  args.push(function (err) {
+  args[args.length - 1] = function (err) {
     if(err || !countAll) {
       callback(err);
     }
 
     result = arguments;
-  });
+  };
 
   keys.map((key) => {
     let transport = this.transports[key];
