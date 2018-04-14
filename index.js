@@ -19,11 +19,15 @@ Logger.prototype.log = function (level) {
   }
 
   args[args.length - 1] = function (err) {
-    if(err || !countAll) {
-      callback(err);
+    result = arguments;
+
+    if(err) {
+      return callback(err);
     }
 
-    result = arguments;
+    if(!countAll) {
+      return callback.apply(callback, result);
+    }
   };
 
   keys.map((key) => {
