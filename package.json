@@ -1,6 +1,6 @@
 {
   "name": "winston-callback",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "description": "Allows you to call handler after completion of all transports.",
   "main": "./index.js",
   "author": {
@@ -23,13 +23,13 @@
     "test": "mocha"
   },
   "peerDependencies": {
-    "winston": "^2.4.0"
+    "winston": ">=2.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "fs-extra-promise": "^0.4.1",
-    "mocha": "^3.2.0",
-    "winston": "^2.4.0"
+    "mocha": "^5.2.0",
+    "winston": "^3.0.0"
   },
   "repository": {
     "type": "git",

@@ -51,9 +51,11 @@ describe('WinstonCallback:', function () {
       }))
     });
 
-    logger = new (winston.Logger)({
+    const opts = {
       transports: transports
-    });
+    };
+
+    logger = winston.createLogger? winston.createLogger(opts): new winston.Logger(opts);
   });
 
   after(function () {
@@ -64,7 +66,7 @@ describe('WinstonCallback:', function () {
     emptyLogs();
   });
 
-  describe('#log()', function () {
+  describe('.log()', function () {
     function checker(level, fn) {
       return new Promise((res, rej) => {
         logger.log(level, message, (err) => {
@@ -83,11 +85,10 @@ describe('WinstonCallback:', function () {
 
       return checker(level, () => {
         files.map((file) => {
-          let _get = fs.readFileSync(file, 'utf8') || '{}';
+          let res = fs.readFileSync(file, 'utf8') || '{}';
+          res = JSON.parse(res);
 
-          _get = JSON.parse(_get);
-
-          if(_get.message == message) {
+          if(res.message == message) {
             counter++;
           }
         });

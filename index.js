@@ -1,8 +1,9 @@
 "use strict";
 
 const winston = require('winston');
+let Logger = require('winston/lib/winston/logger');
+Logger.Logger && (Logger = Logger.Logger);
 
-let Logger = winston.Logger;
 let oldLog = Logger.prototype.log;
 
 Logger.prototype.log = function (level) {
@@ -12,27 +13,16 @@ Logger.prototype.log = function (level) {
   let args = [].slice.call(arguments);
   let last = args[args.length - 1];
   let callback = typeof last == 'function'? last: false;
-  let result = [];
 
   if(!callback) {
     return oldLog.apply(this, args);
   }
 
-  args[args.length - 1] = function (err) {
-    result = arguments;
-
-    if(err) {
-      return callback.apply(callback, err);
-    }
-
-    if(!countAll) {
-      return callback.apply(callback, result);
-    }
-  };
+  args.pop();
 
   keys.map((key) => {
     let transport = this.transports[key];
-
+    
     if(this.levels[transport.level] >= this.levels[level]) {
       countAll += 1;
     }
@@ -45,20 +35,22 @@ Logger.prototype.log = function (level) {
       countLogged++;
 
       if(countAll <= countLogged) {
-        callback.apply(callback, result);
+        callback();
       }
     }
 
     function onError (err) {
       transport.removeListener('error', onError);
-      callback.apply(callback, err);
+      callback(err);
     }
 
     transport.on('logged', onLogged);
     transport.on('error', onError);
   });
 
-  return oldLog.apply(this, args);
+  let res = oldLog.apply(this, args);
+  !countAll && callback();
+  return res;
 };
 
 module.exports = winston;
