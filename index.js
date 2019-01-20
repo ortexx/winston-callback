@@ -32,6 +32,7 @@ Logger.prototype.log = function (level) {
 
     function onLogged () {
       transport.removeListener('logged', onLogged);
+      transport.removeListener('error', onError);
       let p = Promise.resolve();
 
       if(transport._opening || transport.opening) {        
@@ -56,6 +57,7 @@ Logger.prototype.log = function (level) {
 
     function onError (err) {
       transport.removeListener('error', onError);
+      transport.removeListener('logged', onLogged);
       callback(err);
     }
 
