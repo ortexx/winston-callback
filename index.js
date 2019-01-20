@@ -32,11 +32,26 @@ Logger.prototype.log = function (level) {
 
     function onLogged () {
       transport.removeListener('logged', onLogged);
-      countLogged++;
+      let p = Promise.resolve();
 
-      if(countAll <= countLogged) {
-        callback();
+      if(transport._opening || transport.opening) {        
+        p = new Promise((resolve) => {
+          function onOpen () {
+            transport.removeListener('open', onOpen);
+            resolve();
+          }
+
+          transport.on('open', onOpen);
+        });       
       }
+
+      p.then(() => {
+        countLogged++;
+
+        if(countAll <= countLogged) {
+          callback();
+        }
+      });      
     }
 
     function onError (err) {
@@ -48,7 +63,7 @@ Logger.prototype.log = function (level) {
     transport.on('error', onError);
   });
 
-  let res = oldLog.apply(this, args);
+  let res = oldLog.apply(this, args);  
   !countAll && callback();
   return res;
 };
