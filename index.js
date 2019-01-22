@@ -13,6 +13,7 @@ Logger.prototype.log = function (level) {
   let args = [].slice.call(arguments);
   let last = args[args.length - 1];
   let callback = typeof last == 'function'? last: false;
+  let failed = false;
 
   if(!callback) {
     return oldLog.apply(this, args);
@@ -57,8 +58,9 @@ Logger.prototype.log = function (level) {
 
     function onError (err) {
       transport.removeListener('error', onError);
-      transport.removeListener('logged', onLogged);
-      callback(err);
+      transport.removeListener('logged', onLogged);      
+      !failed && callback(err);
+      failed = true;
     }
 
     transport.on('logged', onLogged);
