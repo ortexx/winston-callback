@@ -14,62 +14,71 @@ Logger.prototype.log = function (level) {
   let last = args[args.length - 1];
   let callback = typeof last == 'function'? last: false;
   let failed = false;
+  let fn = callback;
 
-  if(!callback) {
-    return oldLog.apply(this, args);
-  }
-
-  args.pop();
-
-  keys.map((key) => {
-    let transport = this.transports[key];
-    
-    if(this.levels[transport.level] >= this.levels[level]) {
-      countAll += 1;
-    }
-    else {
-      return;
+  return new Promise((resolve, reject) => {
+    if(fn) {
+      args.pop();
     }
 
-    function onLogged () {
-      transport.removeListener('logged', onLogged);
-      transport.removeListener('error', onError);
-      let p = Promise.resolve();
-
-      if(transport._opening || transport.opening) {        
-        p = new Promise((resolve) => {
-          function onOpen () {
-            transport.removeListener('open', onOpen);
-            resolve();
-          }
-
-          transport.on('open', onOpen);
-        });       
+    callback = err => {
+      if(err) {
+        return reject(err);
       }
-
-      p.then(() => {
-        countLogged++;
-
-        if(countAll <= countLogged) {
-          callback();
+  
+      fn && fn();
+      resolve();
+    };
+  
+    keys.map((key) => {
+      let transport = this.transports[key];
+      
+      if(this.levels[transport.level] >= this.levels[level]) {
+        countAll += 1;
+      }
+      else {
+        return;
+      }
+  
+      function onLogged () {
+        transport.removeListener('logged', onLogged);
+        transport.removeListener('error', onError);
+        let p = Promise.resolve();
+  
+        if(transport._opening || transport.opening) {        
+          p = new Promise((_resolve) => {
+            function onOpen () {
+              transport.removeListener('open', onOpen);
+              _resolve();
+            }
+  
+            transport.on('open', onOpen);
+          });       
         }
-      });      
-    }
-
-    function onError (err) {
-      transport.removeListener('error', onError);
-      transport.removeListener('logged', onLogged);      
-      !failed && callback(err);
-      failed = true;
-    }
-
-    transport.on('logged', onLogged);
-    transport.on('error', onError);
-  });
-
-  let res = oldLog.apply(this, args);  
-  !countAll && callback();
-  return res;
+  
+        p.then(() => {
+          countLogged++;
+  
+          if(countAll <= countLogged) {
+            callback();
+          }
+        });      
+      }
+  
+      function onError (err) {
+        transport.removeListener('error', onError);
+        transport.removeListener('logged', onLogged);      
+        !failed && callback(err);
+        failed = true;
+      }
+  
+      transport.on('logged', onLogged);
+      transport.on('error', onError);
+    });
+  
+    oldLog.apply(this, args);  
+    !countAll && callback();
+  });  
 };
 
 module.exports = winston;

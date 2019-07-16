@@ -97,32 +97,36 @@ describe('WinstonCallback:', function () {
       })
     }
 
-    it('check callback working at the maximal level', function () {
+    it('check the callback working at the maximal level', function () {
       return getCount('error', (count) => {
         assert.equal(count, 3);
       })
     });
 
-    it('check callback working at the middle level', function () {
+    it('check the callback working at the middle level', function () {
       return getCount('warn', (count) => {
         assert.equal(count, 2);
       })
     });
 
-    it('check callback working at the bottom level', function () {
+    it('check the callback working at the bottom level', function () {
       return getCount('info', (count) => {
         assert.equal(count, 1);
       })
     });
 
-    it('check without founded transport', function () {
+    it('check without the founded transport', function () {
       return getCount('verbose', (count) => {
         assert.equal(count, 0);
       })
     });
 
-    it('check without callback', function () {
+    it('check without the callback', function () {
       logger.log('verbose', message);
+    });
+
+    it('check with a promise', function (done) {
+      logger.log('verbose', message).then(done);
     });
   });
 });

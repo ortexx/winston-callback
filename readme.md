@@ -2,23 +2,20 @@
 `npm install winston winston-callback`
 
 # About
-Add to winston.Logger.prototype.log a new callback handling.  
-This allows you to call a handler after the completion of all transports.  
-
-## Starting ^1.0.0
-You should install winston yourself. It is a peer dependency.
+It allows you to call a handler after the completion of all transports. 
+You should install __winston__ by yourself. It is a peer dependency.
 
 # Example
 
 ```js
 const winston = require('winston-callback');
-
 /* 
-    or: 
-    const winston = require('winston');
-    require('winston-callback');
+  or: 
+  require('winston-callback');
+  const winston = require('winston');  
 */
-const logger = new (winston.Logger)({
+
+const options = {
   transports: [
     new (winston.transports.Console)({
         level: 'info',
@@ -36,13 +33,19 @@ const logger = new (winston.Logger)({
     })
     //... other transports
   ]
+}
+
+const logger = winston.createLogger
+  ? winston.createLogger(options) // for v3
+  : new (winston.Logger)(options); // for v2 
+
+logger.error('a callback handling', function (err) {
+  process.exit();
 });
 
-logger.error('surprise', function(err) {
-  process.exit(1); // or something else  
-}) 
-
-// process.exit will be run after the completion of all logger transports.
+logger.info('a promise handling').finally(function () {
+  process.exit();
+});
 ```
 
 
