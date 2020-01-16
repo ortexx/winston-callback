@@ -33,7 +33,7 @@ Logger.prototype.log = function (level) {
     keys.map((key) => {
       let transport = this.transports[key];
       
-      if(this.levels[transport.level] >= this.levels[level]) {
+      if(!transport.silent && this.levels[transport.level] >= this.levels[level]) {
         countAll += 1;
       }
       else {

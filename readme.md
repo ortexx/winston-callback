@@ -3,7 +3,7 @@
 
 # About
 It allows you to call a handler after the completion of all transports. 
-You should install __winston__ by yourself. It is a peer dependency.
+You must install __winston__ by yourself. It is a peer dependency.
 
 # Example
 
